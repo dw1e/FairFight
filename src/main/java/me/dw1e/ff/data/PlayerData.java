@@ -154,7 +154,7 @@ public final class PlayerData {
         sprinting = player.isSprinting();
         sneaking = player.isSneaking();
 
-        lastSentTransaction = lastRepliedTransaction = lastFlyingTime = System.currentTimeMillis();
+        lastSentTransaction = lastRepliedTransaction = lastFlyingTime = flyingTime = System.currentTimeMillis();
 
         FairFight.INSTANCE.sendToMainThread(() ->
                 player.getWorld().getEntities().stream()

@@ -1,6 +1,6 @@
 name: FairFight
 main: me.dw1e.ff.FairFightPlugin
-version: 0.19.0
+version: 0.19.1
 description: 专为1.8竞技场服务器打造的轻量级反作弊.
 author: dw1e
 depend: [ ProtocolLib ]
