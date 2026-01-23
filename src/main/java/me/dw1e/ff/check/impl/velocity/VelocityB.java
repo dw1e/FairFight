@@ -42,6 +42,7 @@ public final class VelocityB extends Check {
 
                 if (offset > 1E-7) {
                     if (buffer.add() > tickOfCheck) flag(String.format("tick=%s, offset=%.7f", tick, offset));
+
                 } else buffer.reduce(0.1);
 
                 predictedXZ *= data.getFriction();

@@ -42,6 +42,7 @@ public final class VelocityA extends Check {
 
                 if (offset > limit) {
                     if (buffer.add() > tickOfCheck) flag(String.format("tick=%s, offset=%.7f", tick, offset));
+
                 } else buffer.reduce(0.1);
 
                 if (data.isInWater()) predictedY = (predictedY * 0.8F) - 0.02;

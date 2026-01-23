@@ -8,7 +8,7 @@ import me.dw1e.ff.data.PlayerData;
 import me.dw1e.ff.packet.wrapper.WrappedPacket;
 import me.dw1e.ff.packet.wrapper.client.CPacketFlying;
 
-@CheckInfo(category = Category.VELOCITY, type = "D", desc = "检查水平方向击退的修改(模拟)")
+@CheckInfo(category = Category.VELOCITY, type = "D", desc = "模拟水平方向的击退")
 public final class VelocityD extends Check {
 
     private final Buffer buffer = new Buffer(5);

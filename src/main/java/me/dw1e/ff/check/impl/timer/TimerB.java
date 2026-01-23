@@ -11,7 +11,7 @@ import me.dw1e.ff.packet.wrapper.client.CPacketFlying;
 
 import java.util.Deque;
 
-@CheckInfo(category = Category.TIMER, type = "B", desc = "检查数据包发送的平均时间", minVL = -3.0, maxVL = 20)
+@CheckInfo(category = Category.TIMER, type = "B", desc = "使用'平均速度'检查游戏时间加速", minVL = -3.0, maxVL = 20)
 public final class TimerB extends Check {
 
     // 此检查用于修复'余额'滥用导致 Timer A 被绕过

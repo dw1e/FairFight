@@ -138,7 +138,7 @@ public enum FairFight {
 
     public void reloadConfig() {
         configManager.loadConfigs();
-        checkManager.getCheckValues().forEach(CheckValue::updateConfig);
+        checkManager.getCheckValueMap().values().forEach(CheckValue::updateConfig);
 
         guiManager.disable();
         guiManager.enable();

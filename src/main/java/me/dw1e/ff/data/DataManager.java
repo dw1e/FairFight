@@ -28,7 +28,7 @@ public final class DataManager {
     }
 
     public void create(Player player) {
-        if (!dataMap.containsKey(player.getUniqueId())) dataMap.put(player.getUniqueId(), new PlayerData(player));
+        dataMap.computeIfAbsent(player.getUniqueId(), uuid -> new PlayerData(player));
     }
 
     public void delete(UUID uuid) {

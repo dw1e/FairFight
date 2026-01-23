@@ -56,7 +56,7 @@ import java.util.*;
 public final class CheckManager {
 
     private final List<Class<? extends Check>> checkList = new ArrayList<>();
-    private final Set<CheckValue> checkValues = new HashSet<>(); // 检测们的配置文件
+    private final Map<String, CheckValue> checkValueMap = new HashMap<>(); // 检测们的配置文件
     private final Set<UUID> interval_player = new HashSet<>(); // 警报间隔时间内的玩家
 
     private final DecimalFormat decimalFormat = new DecimalFormat("0.###");
@@ -64,13 +64,13 @@ public final class CheckManager {
     public void enable() {
         addChecksToList();
 
-        loadChecks(null).forEach(check -> checkValues.add(new CheckValue(check)));
+        loadChecks(null).forEach(check -> checkValueMap.put(check.toString(), new CheckValue(check)));
         FairFight.INSTANCE.getConfigManager().saveChecks();
     }
 
     public void disable() {
         checkList.clear();
-        checkValues.clear();
+        checkValueMap.clear();
     }
 
     private void addChecksToList() {
@@ -170,12 +170,11 @@ public final class CheckManager {
     }
 
     public CheckValue getCheckValue(Check check) {
-        return checkValues.stream().filter(value -> value.getName().equals(check.toString()))
-                .findFirst().orElse(null);
+        return checkValueMap.getOrDefault(check.toString(), null);
     }
 
-    public Set<CheckValue> getCheckValues() {
-        return checkValues;
+    public Map<String, CheckValue> getCheckValueMap() {
+        return checkValueMap;
     }
 
     public List<Check> loadChecks(PlayerData data) {
