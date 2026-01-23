@@ -48,8 +48,8 @@ public final class FlyD extends Check {
 
                 limit += 1E-7; // 精度问题
 
-                // 检查从粘液块上的起跳高度是否 大于(增加) 或 等于(无衰减) 坠落速度
-                if (absY > limit && absY >= lastLastAbsY) flag(String.format("slime, %.7f ≥ %.7f", absY, lastLastAbsY),
+                // 检查从粘液块上的起跳高度是否 大于(增加) 或 等于(无衰减) 坠落速度d
+                if (absY > limit && absY >= lastLastAbsY || lastLastAbsY != 0) flag(String.format("slime, %.7f ≥ %.7f", absY, lastLastAbsY),
                         Math.max(1.0, Math.round(absY - lastLastAbsY) * 5.0));
             }
 
