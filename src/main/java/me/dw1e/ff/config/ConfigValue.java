@@ -42,6 +42,10 @@ public final class ConfigValue {
     public static String timeout_check_flying_alert_message;
     // 超时检测的配置
 
+    // 杂项功能配置
+    public static boolean ignore_high_version;
+    // 杂项功能配置
+
     public static void update() {
         FileConfiguration config = FairFight.INSTANCE.getConfigManager().getConfig();
 
@@ -79,6 +83,10 @@ public final class ConfigValue {
         timeout_check_flying_kick_message = config.getString("timeout_check.flying.kick_message");
         timeout_check_flying_alert_message = config.getString("timeout_check.flying.alert_message");
         // 超时检测的配置
+
+        // 杂项功能配置
+        ignore_high_version = config.getBoolean("ignore_high_version");
+        // 杂项功能配置
     }
 
 }

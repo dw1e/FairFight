@@ -22,6 +22,7 @@ import me.dw1e.ff.misc.util.StringUtil;
 import me.dw1e.ff.packet.wrapper.WrappedPacket;
 import me.dw1e.ff.packet.wrapper.client.*;
 import me.dw1e.ff.packet.wrapper.server.*;
+import me.dw1e.ff.util.ViaVersionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -175,6 +176,12 @@ public final class PlayerData {
         alerts = player.hasMetadata("FAIR_FIGHT_ALERTS") && player.hasPermission("fairfight.command.alerts");
         verbose = player.hasMetadata("FAIR_FIGHT_VERBOSE") && player.hasPermission("fairfight.command.verbose");
         bypass = player.hasPermission("fairfight.bypass");
+
+        if (ConfigValue.ignore_high_version && FairFight.isViaVersionEnabled) {
+            if (ViaVersionUtil.isPlayerHighVersion(player)) {
+                bypass = true;
+            }
+        }
     }
 
     public void process(WrappedPacket packet) {
@@ -1074,6 +1081,12 @@ public final class PlayerData {
     }
 
     public void setBypass(boolean bypass) {
+        if (ConfigValue.ignore_high_version && FairFight.isViaVersionEnabled) {
+            if (ViaVersionUtil.isPlayerHighVersion(this.player)) {
+                this.bypass = true;
+                return;
+            }
+        }
         this.bypass = bypass;
     }
 

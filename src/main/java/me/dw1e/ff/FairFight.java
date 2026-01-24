@@ -24,6 +24,7 @@ public enum FairFight {
 
     public static final String PREFIX = ChatColor.DARK_GRAY + "[" + ChatColor.YELLOW + "FF" + ChatColor.DARK_GRAY + "]";
     public static double TEST; // 测试用数值
+    public static boolean isViaVersionEnabled;
     private FairFightPlugin plugin;
     private ConfigManager configManager;
     private DataManager dataManager;
@@ -94,6 +95,15 @@ public enum FairFight {
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketHandler(plugin));
 
         resetVLTask = getNewResetVLTask();
+
+        // 附加功能
+        if (Bukkit.getPluginManager().isPluginEnabled("ViaVersion")) {
+            try {
+                // ViaVersion 不能热加载，只需插件启动时检测一次，有则有无则无
+                Class.forName("com.viaversion.viaversion.api.Via");
+                isViaVersionEnabled = true;
+            } catch (ClassNotFoundException ignored) {}
+        }
     }
 
     public void onDisable(FairFightPlugin plugin) {

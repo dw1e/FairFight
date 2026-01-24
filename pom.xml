@@ -6,7 +6,7 @@
 
   <groupId>me.dw1e</groupId>
   <artifactId>FairFight</artifactId>
-  <version>0.19.4</version>
+  <version>0.19.5</version>
   <packaging>jar</packaging>
 
   <name>FairFight</name>
@@ -58,6 +58,10 @@
           <id>sonatype</id>
           <url>https://oss.sonatype.org/content/groups/public/</url>
       </repository>
+      <repository>
+          <id>viaversion-everything</id>
+          <url>https://repo.viaversion.com/everything</url>
+      </repository>
   </repositories>
 
   <dependencies>
@@ -77,6 +81,12 @@
           <groupId>net.dmulloy2</groupId>
           <artifactId>ProtocolLib</artifactId>
           <version>5.1.0</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>com.viaversion</groupId>
+          <artifactId>viaversion-api</artifactId>
+          <version>5.7.1</version>
           <scope>provided</scope>
       </dependency>
   </dependencies>
