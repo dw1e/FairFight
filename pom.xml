@@ -6,7 +6,7 @@
 
   <groupId>me.dw1e</groupId>
   <artifactId>FairFight</artifactId>
-  <version>1.0.0</version>
+  <version>0.19.4</version>
   <packaging>jar</packaging>
 
   <name>FairFight</name>
