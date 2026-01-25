@@ -15,6 +15,8 @@ public final class PacketHandler extends PacketAdapter {
 
     @Override
     public void onPacketReceiving(PacketEvent event) {
+        if (event.isCancelled()) return;
+
         PlayerData data = FairFight.INSTANCE.getDataManager().getData(event.getPlayer().getUniqueId());
         WrappedPacket wrappedPacket = ClassWrapper.wrapPacket(event.getPacketType(), event.getPacket());
 
@@ -25,7 +27,7 @@ public final class PacketHandler extends PacketAdapter {
 
     @Override
     public void onPacketSending(PacketEvent event) {
-        if (event.isPlayerTemporary()) return;
+        if (event.isCancelled() || event.isPlayerTemporary()) return;
 
         PlayerData data = FairFight.INSTANCE.getDataManager().getData(event.getPlayer().getUniqueId());
         WrappedPacket wrappedPacket = ClassWrapper.wrapPacket(event.getPacketType(), event.getPacket());

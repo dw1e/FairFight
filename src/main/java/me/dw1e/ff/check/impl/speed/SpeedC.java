@@ -22,8 +22,8 @@ public final class SpeedC extends Check {
     @Override
     public void handle(WrappedPacket packet) {
         if (packet instanceof CPacketFlying && ((CPacketFlying) packet).isPosition()) {
-            if (!data.isSprinting() || data.isNearBoat() || data.isNearWall()
-                    || data.isInLiquid() || data.isOnSlime() || data.isPushedByPiston()
+            if (!data.isSprinting() || !data.isLastClientGround() || !data.isClientGround()
+                    || data.isNearBoat() || data.isNearWall() || data.isInLiquid() || data.isOnSlime()
                     || data.getTickSinceVelocity() <= data.getMaxVelocityTicks()
                     || data.getTickSinceTeleport() < 3
             ) lastAngle = null;
