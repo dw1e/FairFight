@@ -120,7 +120,12 @@ public final class SpeedA extends Check {
                     flag(String.format("excess=%.7f/%.3f\ntags=%s", excess, threshold, Arrays.toString(tags.toArray())),
                             Math.max(0.5, (excess - threshold) * 5.0));
 
-                    if (violations > 0.0 && sneaking) data.resetSneak();
+                    if (violations > 0.0) {
+                        if (sneaking) data.resetSneak();
+
+                        // 一个回弹用法的示例. 在有冗余阈值的检测中, 建议等阈值耗尽后再开始回弹(或其它惩罚)
+                        data.setback(PlayerData.SetbackType.LAST_LOCATION);
+                    }
                 } else if (data.getTick() - lastFlagTicks > 20) decreaseVL(0.025);
             }
 

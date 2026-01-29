@@ -22,10 +22,7 @@ import me.dw1e.ff.misc.util.StringUtil;
 import me.dw1e.ff.packet.wrapper.WrappedPacket;
 import me.dw1e.ff.packet.wrapper.client.*;
 import me.dw1e.ff.packet.wrapper.server.*;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -52,6 +49,9 @@ public final class PlayerData {
     private final EmulationProcessor emulationProcessor = new EmulationProcessor(this);
 
     private Location lastLastLocation, lastLocation;
+
+    // 上一次处于服务器地面的位置, 用于安全回弹
+    private Location lastGroundLocation;
 
     private boolean alerts, verbose, bypass, kicked, punished; // 玩家在反作弊内的一些设置
 
@@ -136,7 +136,12 @@ public final class PlayerData {
 
         // 初始化一些数据
 
-        lastLastLocation = lastLocation = location = player.getLocation().clone();
+        Location bukkitLoc = player.getLocation().clone();
+
+        lastGroundLocation = bukkitLoc.clone();
+        lastLastLocation = bukkitLoc.clone();
+        lastLocation = bukkitLoc.clone();
+        location = bukkitLoc.clone();
 
         speedEffect = PlayerUtil.getAmplifier(player, PotionEffectType.SPEED);
         slowEffect = PlayerUtil.getAmplifier(player, PotionEffectType.SLOW);
@@ -796,6 +801,8 @@ public final class PlayerData {
 
         serverGround |= onGhostBlock;
 
+        if (mathGround && serverGround) lastGroundLocation = location.clone();
+
         lastFriction = friction;
         friction = computeFriction();
     }
@@ -1025,6 +1032,26 @@ public final class PlayerData {
         return material.equals(Material.BOW) && player.getInventory().contains(Material.ARROW);
     }
 
+    public void setback(SetbackType setbackType) {
+        final Location teleport;
+
+        switch (setbackType) {
+            case LAST_LOCATION:
+                teleport = lastLocation.clone();
+                break;
+            case SAFE_GROUND:
+                teleport = lastGroundLocation.clone();
+                break;
+            default:
+                FairFight.INSTANCE.consoleLog(ChatColor.RED +
+                        String.format("[警告] 玩家 %s 触发了未处理的回弹类型: %s", player.getName(), setbackType));
+                return;
+        }
+
+        // 因为本反作弊不在主线程运行, 此方法必须发回主线程执行
+        FairFight.INSTANCE.sendToMainThread(() -> player.teleport(teleport));
+    }
+
     public void destroy() {
         checks.clear();
         entityMap.clear();
@@ -1033,7 +1060,7 @@ public final class PlayerData {
         transactionMap.clear();
         actionMap.clear();
 
-        lastLastLocation = lastLocation = null;
+        lastLastLocation = lastLocation = lastGroundLocation = null;
         lastTarget = null;
     }
 
@@ -1478,5 +1505,9 @@ public final class PlayerData {
 
     public int getTickSinceServerGround() {
         return tickSinceServerGround;
+    }
+
+    public enum SetbackType {
+        SAFE_GROUND, LAST_LOCATION
     }
 }
