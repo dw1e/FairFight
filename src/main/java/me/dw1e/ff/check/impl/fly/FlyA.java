@@ -121,7 +121,6 @@ public final class FlyA extends Check {
 
             boolean exempt = data.getTick() < 20 || data.isFlying() || data.isInUnloadedChunk()
                     || data.isOnSlime() || data.isClimbing()
-                    || data.getTickSinceRidingInteract() < 6
                     || data.getTickSincePushedByPiston() < 4
                     || data.getTickSinceAbilityChange() < 3
                     || data.getTickSinceSteerVehicle() < 4;

@@ -9,7 +9,7 @@ import me.dw1e.ff.misc.math.MathUtil;
 import me.dw1e.ff.packet.wrapper.WrappedPacket;
 import me.dw1e.ff.packet.wrapper.client.CPacketFlying;
 
-@CheckInfo(category = Category.AIM, type = "A", desc = "检查异常GCD")
+@CheckInfo(category = Category.AIM, type = "A", desc = "检查异常GCD", maxVL = 15)
 public final class AimA extends Check {
 
     private final Buffer buffer = new Buffer(10);

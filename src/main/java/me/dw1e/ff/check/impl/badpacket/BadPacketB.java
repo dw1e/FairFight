@@ -20,11 +20,7 @@ public final class BadPacketB extends Check {
     @Override
     public void handle(WrappedPacket packet) {
         if (packet instanceof CPacketFlying && ((CPacketFlying) packet).isRotation()) {
-            if (data.getTick() < 20
-                    || data.getTickSinceTeleport() < 4
-                    || data.getTickSinceSteerVehicle() < 3
-                    || data.getTickSinceRidingInteract() < 7
-            ) return;
+            if (data.getTick() < 20 || data.getTickSinceTeleport() < 4 || data.getTickSinceSteerVehicle() < 3) return;
 
             Location from = data.getLastLocation(), to = data.getLocation();
 

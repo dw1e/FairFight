@@ -23,8 +23,7 @@ public final class KillAuraJ extends Check {
 
     @Override
     public void handle(WrappedPacket packet) {
-        if (packet instanceof CPacketUseEntity && ((CPacketUseEntity) packet).getAction()
-                == EnumWrappers.EntityUseAction.ATTACK) attacked = true;
+        if (packet instanceof CPacketUseEntity && ((CPacketUseEntity) packet).isAttack()) attacked = true;
 
         else if (packet instanceof CPacketBlockDig && ((CPacketBlockDig) packet).getPlayerDigType()
                 == EnumWrappers.PlayerDigType.START_DESTROY_BLOCK) dug = true;

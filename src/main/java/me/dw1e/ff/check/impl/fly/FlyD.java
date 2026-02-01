@@ -37,7 +37,7 @@ public final class FlyD extends Check {
             // 检查直接从粘液块上起跳的跳跃高度, 或越跳越高, 高度无衰减
             check_slime:
             {
-                if (!data.isOnSlime()) break check_slime;
+                if (!data.isOnSlime() || data.isPushedByPiston()) break check_slime;
 
                 double absY = Math.abs(deltaY), lastLastAbsY = Math.abs(data.getLastLastDeltaY());
 
@@ -49,7 +49,7 @@ public final class FlyD extends Check {
                 limit += 1E-7; // 精度问题
 
                 // 检查从粘液块上的起跳高度是否 大于(增加) 或 等于(无衰减) 坠落速度
-                if ((absY > limit && absY >= lastLastAbsY) || lastLastAbsY != 0) {
+                if (absY > limit && absY >= lastLastAbsY) {
                     flag(String.format("slime, %.7f ≥ %.7f", absY, lastLastAbsY),
                             Math.max(1.0, Math.round(absY - lastLastAbsY) * 5.0));
                 }
@@ -80,6 +80,7 @@ public final class FlyD extends Check {
                     flag(String.format("high, offset=%.7f, streaks=%s", offset, ++streaks),
                             Math.max(Math.min(streaks, 5), offset * 5.0));
                     hasFlag = true;
+                    data.setback(PlayerData.SetbackType.SAFE_GROUND);
                 }
             }
 

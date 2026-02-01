@@ -1,6 +1,5 @@
 package me.dw1e.ff.check.impl.hitbox;
 
-import com.comphenix.protocol.wrappers.EnumWrappers;
 import me.dw1e.ff.check.Check;
 import me.dw1e.ff.check.api.Category;
 import me.dw1e.ff.check.api.annotations.CheckInfo;
@@ -24,8 +23,7 @@ public final class HitboxC extends Check {
         if (packet instanceof CPacketUseEntity) {
             CPacketUseEntity wrapper = (CPacketUseEntity) packet;
 
-            if (wrapper.getAction() != EnumWrappers.EntityUseAction.INTERACT_AT
-                    || ServerUtil.getPlayerByEntityId(wrapper.getEntityId()) == null) return;
+            if (!wrapper.isInteractAt() || ServerUtil.getPlayerByEntityId(wrapper.getEntityId()) == null) return;
 
             Vector hitVec = wrapper.getHitVec();
 

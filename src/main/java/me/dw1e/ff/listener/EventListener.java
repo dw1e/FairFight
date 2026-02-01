@@ -86,7 +86,7 @@ public final class EventListener implements Listener {
     }
 
     // 这是为了防止一些简单的Command Blocker隐藏指令, 就像AAC 4的效果一样
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR)
     private void onCommand(PlayerCommandPreprocessEvent event) {
         Set<String> ffCMDs = new HashSet<>(Arrays.asList("ff", "fairfight:ff", "fairfight", "fairfight:fairfight"));
 

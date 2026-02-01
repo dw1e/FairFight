@@ -30,7 +30,7 @@ public final class FlyF extends Check {
 
                 if (airTicks > maxTicks) {
                     if (++streaks > 1) { // 下落时搭方块接住会误判; 下落时靠近完整方块若触发了登台阶动作则误判; 目前使用一个缓冲解决误判
-                        double vl = Math.min(streaks - 1, 5) * (data.isBridging() ? 0.25 : 1.0); // 减缓搭路时的误判
+                        double vl = Math.min(streaks - 1, 5) * (data.isBridging() ? 0.3 : 1.0); // 减缓搭路时的误判
 
                         flag(String.format("airTicks=%s/%s, deltaY=%.7f, streaks=%s",
                                 airTicks, maxTicks, data.getDeltaY(), streaks), vl);
@@ -38,10 +38,10 @@ public final class FlyF extends Check {
 
                     // 防止幽灵方块误判, 触发检测时给玩家发送他脚下附近的方块更新包, 让其与服务器视角同步
                     BlockUtil.resyncBlocksAround(data.getPlayer(), data.getLocation());
-
+                    if (violations > 0) data.setback(PlayerData.SetbackType.LAST_LOCATION);
                 } else {
                     streaks = 0;
-                    decreaseVL(0.02);
+                    decreaseVL(0.025);
                 }
             }
         }

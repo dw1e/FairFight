@@ -9,7 +9,7 @@ import me.dw1e.ff.misc.math.MathUtil;
 import me.dw1e.ff.packet.wrapper.WrappedPacket;
 import me.dw1e.ff.packet.wrapper.client.CPacketFlying;
 
-@CheckInfo(category = Category.AIM, type = "F", desc = "检查视角移动中的除数")
+@CheckInfo(category = Category.AIM, type = "F", desc = "检查视角移动中的除数", maxVL = 10)
 public final class AimF extends Check {
 
     private final Buffer buffer = new Buffer(10);

@@ -25,6 +25,18 @@ public final class CPacketUseEntity extends WrappedPacket {
         return action;
     }
 
+    public boolean isAttack() {
+        return action == EnumWrappers.EntityUseAction.ATTACK;
+    }
+
+    public boolean isInteract() {
+        return action == EnumWrappers.EntityUseAction.INTERACT;
+    }
+
+    public boolean isInteractAt() {
+        return action == EnumWrappers.EntityUseAction.INTERACT_AT;
+    }
+
     public Vector getHitVec() {
         return hitVec;
     }

@@ -14,6 +14,7 @@ public abstract class Check {
     private final String type, description;
     private final double minViolations;
     private final int maxViolations;
+    private final boolean punish;
 
     protected double violations;
 
@@ -28,6 +29,7 @@ public abstract class Check {
             description = info.desc();
             minViolations = info.minVL();
             maxViolations = info.maxVL();
+            punish = info.punish();
         } else throw new IllegalStateException("未在 " + getClass().getName() + " 中添加 CheckInfo 注释!");
 
         violations = minViolations;
@@ -79,6 +81,10 @@ public abstract class Check {
 
     public int getMaxViolations() {
         return maxViolations;
+    }
+
+    public boolean isPunish() {
+        return punish;
     }
 
     @Override

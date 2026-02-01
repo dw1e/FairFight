@@ -1,6 +1,5 @@
 package me.dw1e.ff.check.impl.killaura;
 
-import com.comphenix.protocol.wrappers.EnumWrappers;
 import me.dw1e.ff.check.Check;
 import me.dw1e.ff.check.api.Category;
 import me.dw1e.ff.check.api.annotations.CheckInfo;
@@ -23,7 +22,7 @@ public final class KillAuraC extends Check {
         if (packet instanceof CPacketUseEntity) {
             CPacketUseEntity wrapper = ((CPacketUseEntity) packet);
 
-            if (wrapper.getAction() != EnumWrappers.EntityUseAction.ATTACK) return;
+            if (!wrapper.isAttack()) return;
 
             int target = wrapper.getEntityId();
 

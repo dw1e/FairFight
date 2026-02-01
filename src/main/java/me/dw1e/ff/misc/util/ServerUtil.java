@@ -2,8 +2,6 @@ package me.dw1e.ff.misc.util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public final class ServerUtil {
@@ -11,12 +9,6 @@ public final class ServerUtil {
     public static Player getPlayerByEntityId(int entityId) {
         return Bukkit.getOnlinePlayers().stream()
                 .filter(player -> player.getEntityId() == entityId)
-                .findFirst().orElse(null);
-    }
-
-    public static Entity getEntityByEntityId(World world, int entityId) {
-        return world.getEntities().stream()
-                .filter(entity -> entity.getEntityId() == entityId)
                 .findFirst().orElse(null);
     }
 

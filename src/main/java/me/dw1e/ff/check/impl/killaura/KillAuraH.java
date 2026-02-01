@@ -1,6 +1,5 @@
 package me.dw1e.ff.check.impl.killaura;
 
-import com.comphenix.protocol.wrappers.EnumWrappers;
 import me.dw1e.ff.check.Check;
 import me.dw1e.ff.check.api.Buffer;
 import me.dw1e.ff.check.api.Category;
@@ -20,8 +19,7 @@ public final class KillAuraH extends Check {
 
     @Override
     public void handle(WrappedPacket packet) {
-        if (packet instanceof CPacketUseEntity && ((CPacketUseEntity) packet).getAction()
-                == EnumWrappers.EntityUseAction.ATTACK) {
+        if (packet instanceof CPacketUseEntity && ((CPacketUseEntity) packet).isAttack()) {
 
             if (data.isUsingItem()) {
                 data.randomChangeSlot();

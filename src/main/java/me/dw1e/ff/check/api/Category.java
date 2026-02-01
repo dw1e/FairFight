@@ -9,6 +9,7 @@ public enum Category {
     INTERACT("Interact"),
     INVENTORY("Inventory"),
     KILL_AURA("KillAura"),
+    MISC("Misc"),
     POST("Post"),
     SCAFFOLD("Scaffold"),
     FLY("Fly"),

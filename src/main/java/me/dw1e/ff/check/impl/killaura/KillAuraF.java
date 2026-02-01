@@ -29,8 +29,8 @@ public final class KillAuraF extends Check {
 
             if (wrapper.getPlayerDigType() != EnumWrappers.PlayerDigType.DROP_ALL_ITEMS
                     && wrapper.getPlayerDigType() != EnumWrappers.PlayerDigType.DROP_ITEM) dug = true;
-        } else if (packet instanceof CPacketUseEntity
-                && ((CPacketUseEntity) packet).getAction() == EnumWrappers.EntityUseAction.ATTACK) {
+
+        } else if (packet instanceof CPacketUseEntity && ((CPacketUseEntity) packet).isAttack()) {
             if (placed || !dug || data.isInVehicle()) return;
 
             flag();

@@ -20,6 +20,7 @@ import me.dw1e.ff.check.impl.inventory.InventoryB;
 import me.dw1e.ff.check.impl.inventory.InventoryC;
 import me.dw1e.ff.check.impl.inventory.InventoryD;
 import me.dw1e.ff.check.impl.killaura.*;
+import me.dw1e.ff.check.impl.misc.PhaseA;
 import me.dw1e.ff.check.impl.post.*;
 import me.dw1e.ff.check.impl.scaffold.*;
 import me.dw1e.ff.check.impl.speed.SpeedA;
@@ -81,6 +82,8 @@ public final class CheckManager {
         checkList.add(AimE.class);
         checkList.add(AimF.class);
         checkList.add(AimG.class);
+        checkList.add(AimH.class);
+        checkList.add(AimI.class);
 
         checkList.add(AutoClickerA.class);
         checkList.add(AutoClickerB.class);
@@ -136,6 +139,8 @@ public final class CheckManager {
         checkList.add(KillAuraH.class);
         checkList.add(KillAuraI.class);
         checkList.add(KillAuraJ.class);
+
+        checkList.add(PhaseA.class);
 
         checkList.add(PostA.class);
         checkList.add(PostB.class);
@@ -214,7 +219,7 @@ public final class CheckManager {
 
         String format = replaceAndColor(ConfigValue.alerts_format, data, check)
                 .replace("%vl%", decimalFormat.format(check.getViolations()))
-                .replace("%max_vl%", String.valueOf(checkValue.getPunishVL()));
+                .replace("%max_vl%", checkValue.isPunishable() ? String.valueOf(checkValue.getPunishVL()) : "∞");
 
         TextComponent alertMessage = new TextComponent(format);
 

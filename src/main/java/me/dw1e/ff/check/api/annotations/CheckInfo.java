@@ -20,4 +20,6 @@ public @interface CheckInfo {
     double minVL() default 0.0;
 
     int maxVL() default 30;
+
+    boolean punish() default true;
 }

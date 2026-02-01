@@ -8,7 +8,7 @@ import me.dw1e.ff.packet.wrapper.WrappedPacket;
 import me.dw1e.ff.packet.wrapper.client.CPacketBlockPlace;
 import org.bukkit.block.BlockFace;
 
-@CheckInfo(category = Category.SCAFFOLD, type = "G", desc = "检查异常的放置成功率(≥60%)", maxVL = 10)
+@CheckInfo(category = Category.SCAFFOLD, type = "G", desc = "检查异常的放置成功率", maxVL = 10)
 public final class ScaffoldG extends Check {
 
     private int success, failure;
@@ -19,13 +19,15 @@ public final class ScaffoldG extends Check {
 
     @Override
     public void handle(WrappedPacket packet) {
-        if (packet instanceof CPacketBlockPlace && data.isBridging() && !data.isSneaking()
-                && data.getDeltaXZ() > data.getAttributeSpeed()) {
+        if (packet instanceof CPacketBlockPlace && data.isBridging() && !data.isSneaking()) {
 
             CPacketBlockPlace wrapper = (CPacketBlockPlace) packet;
 
             // 只检查搭路情况
             if (wrapper.getBlockFace() == BlockFace.DOWN || wrapper.getBlockFace() == BlockFace.UP) return;
+
+            double deltaXZ = data.getDeltaXZ();
+            if (data.getDeltaXZ() < data.getAttributeSpeed()) return;
 
             if (wrapper.isPlacedBlock()) ++success;
             else ++failure;
@@ -37,9 +39,9 @@ public final class ScaffoldG extends Check {
 
             if (success + failure >= 10) {
                 double ratio = (double) success / (success + failure);
+                double limit = deltaXZ < 0.2 ? 0.9 : 0.6;
 
-                // 比率可以改的小一点, 普通玩家在快速搭路时cps不可能很低
-                if (ratio >= 0.6) flag("ratio=" + ratio);
+                if (ratio >= limit) flag(String.format("ratio=%s, deltaXZ=%.4f", ratio, deltaXZ));
 
                 success = failure = 0;
             }

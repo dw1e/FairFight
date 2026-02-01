@@ -32,6 +32,7 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -40,18 +41,15 @@ public final class PlayerData {
 
     private final Player player;
     private final List<Check> checks;
-    private final Location location;
-    private final EvictingList<Location> teleports = new EvictingList<>(15);
+    private final EvictingList<Vector> teleports = new EvictingList<>(20);
     private final Map<Short, Long> transactionMap = new HashMap<>();
     private final Map<Short, Runnable> actionMap = new HashMap<>();
     private final Map<Integer, HitboxEntity> entityMap = new HashMap<>();
     private final Map<BlockPosition, Boolean> ghostBlocks = new HashMap<>();
     private final EmulationProcessor emulationProcessor = new EmulationProcessor(this);
 
-    private Location lastLastLocation, lastLocation;
-
-    // 上一次处于服务器地面的位置, 用于安全回弹
-    private Location lastGroundLocation;
+    private Location lastLastLocation, lastLocation, location;
+    private Location lastGroundLocation; // 上一次处于服务器地面的位置, 用于安全回弹
 
     private boolean alerts, verbose, bypass, kicked, punished; // 玩家在反作弊内的一些设置
 
@@ -92,42 +90,41 @@ public final class PlayerData {
 
     private int // 玩家行为类的计时
             tick,
-            tickSinceTeleport = 20,
-            tickSinceAttack = 20,
-            tickSinceVelocity = 20,
-            tickSinceOtherVelocity = 20,
+            tickSinceTeleport = 100,
+            tickSinceAttack = 100,
+            tickSinceVelocity = 100,
+            tickSinceOtherVelocity = 100,
             maxVelocityTicks,
-            tickSinceAbilityChange = 20,
-            tickSinceClientGround = 20,
-            tickSinceSprinting = 20,
-            tickSinceJumped = 20,
-            tickSinceUsingItem = 20,
-            tickSinceDroppedItem = 20,
-            tickSinceOffsetMotion = 20,
-            tickSinceSteerVehicle = 20,
-            tickSinceRidingInteract = 20,
-            tickSincePlacedBlock = 20,
+            tickSinceAbilityChange = 100,
+            tickSinceClientGround = 100,
+            tickSinceSprinting = 100,
+            tickSinceJumped = 100,
+            tickSinceUsingItem = 100,
+            tickSinceDroppedItem = 100,
+            tickSinceOffsetMotion = 100,
+            tickSinceSteerVehicle = 100,
+            tickSincePlacedBlock = 100,
             inventoryOpenTicks;
 
     private int // 碰撞类的计时
-            climbingTicks = 20,
-            tickSinceClimbing = 20,
-            tickSinceInLiquid = 20,
-            tickSinceInFlowingLava = 20,
+            climbingTicks = 100,
+            tickSinceClimbing = 100,
+            tickSinceInLiquid = 100,
+            tickSinceInFlowingLava = 100,
             liquidTicks,
-            tickSinceUnderBlock = 20,
-            tickSinceInWeb = 20,
-            tickSinceNearStep = 20,
-            tickSincePushedByPiston = 20,
-            tickSinceOnSlime = 20,
-            tickSinceNearWall = 20,
-            tickSinceServerGround = 20;
+            tickSinceUnderBlock = 100,
+            tickSinceInWeb = 100,
+            tickSinceNearStep = 100,
+            tickSincePushedByPiston = 100,
+            tickSinceOnSlime = 100,
+            tickSinceNearWall = 100,
+            tickSinceServerGround = 100;
 
     private short transId = Short.MIN_VALUE;
 
     private long transPing, lastSentTransaction, lastRepliedTransaction;
 
-    private long lastFlyingTime, flyingTime; // 此处滞后判断不可信, 仅用于防止fakeLag与blink类作弊的过于离谱
+    private long lastFlyingTime, flyingTime;
 
     private Player lastTarget;
 
@@ -229,23 +226,36 @@ public final class PlayerData {
                 location.setPitch(wrapper.getPitch());
             }
 
+            // !!! 不要给所有移动检测都增加传送豁免 !!!
+            // 一个新的Matrix Fly绕过已经发现, 且截至到 2026/1/14 日暂未修复
+            // 很多反作弊也可使用, 例如Vulcan, Verus等
+            // 原理: 利用原版Spigot的穿墙拉回(xxx moved wrongly)实现被传送而后获得传送豁免
             if (wrapper.isPosition() && wrapper.isRotation()) {
-                for (Location tpLoc : teleports) {
-                    if (!wrapper.isOnGround() // 增加0.03的冗余, 在卡方块里/离开坐骑时传送的位置略微有出入
-                            && Math.abs(tpLoc.getX() - wrapper.getX()) <= 0.03
-                            && Math.abs(tpLoc.getY() - wrapper.getY()) <= 0.03
-                            && Math.abs(tpLoc.getZ() - wrapper.getZ()) <= 0.03) {
+                Iterator<Vector> it = teleports.iterator();
+
+                while (it.hasNext()) {
+                    Vector tpLoc = it.next();
+
+                    double dx = Math.abs(tpLoc.getX() - wrapper.getX());
+                    double dy = Math.abs(tpLoc.getY() - wrapper.getY());
+                    double dz = Math.abs(tpLoc.getZ() - wrapper.getZ());
+
+                    // 增加0.03的冗余, 在卡方块里/离开坐骑时传送的位置略微有出入
+                    if (dx <= 0.03 && dy <= 0.03 && dz <= 0.03) {
                         tickSinceTeleport = 0;
 
-                        // !!! 不要给所有移动检测都增加传送豁免 !!!
-                        // 一个新的Matrix Fly绕过已经发现, 且截至到 2026/1/14 日暂未修复
-                        // 很多反作弊也可使用, 例如Vulcan, Verus等
-                        // 原理: 利用原版Spigot的穿墙拉回(xxx moved wrongly)实现被传送而后获得传送豁免
+                        // 将上一次的位置设置为传送目的地, 让一些检测不使用传送豁免以防绕过
+                        lastLocation.setX(tpLoc.getX());
+                        lastLocation.setY(tpLoc.getY());
+                        lastLocation.setZ(tpLoc.getZ());
 
-                        lastLocation = tpLoc.clone(); // 将上一次的位置设置为传送目的地, 让一些检测不使用传送豁免以防绕过
                         clientGround = mathGround && serverGround; // 传送时地面状态永远为否, 所以需要此处修正
 
-                        teleports.remove(tpLoc);
+                        // 重置一些运动
+                        lastDeltaX = lastDeltaY = lastDeltaZ = lastDeltaXZ = 0.0;
+                        velocityX = velocityY = velocityZ = velocityXZ = 0.0;
+
+                        it.remove();
                         break;
                     }
                 }
@@ -383,20 +393,9 @@ public final class PlayerData {
         } else if (packet instanceof CPacketUseEntity) {
             CPacketUseEntity wrapper = (CPacketUseEntity) packet;
 
-            switch (wrapper.getAction()) {
-                case ATTACK:
-                    tickSinceAttack = 0;
-                    lastTarget = ServerUtil.getPlayerByEntityId(wrapper.getEntityId());
-
-                    break;
-                case INTERACT: {
-                    Entity entity = ServerUtil.getEntityByEntityId(player.getWorld(), wrapper.getEntityId());
-
-                    // 与可骑乘生物交互, 在空中右键坐骑乘坐时传送位置会有较大出入, 使用此方法豁免一些检查
-                    if (entity instanceof Vehicle) tickSinceRidingInteract = 0;
-
-                    break;
-                }
+            if (wrapper.isAttack()) {
+                tickSinceAttack = 0;
+                lastTarget = ServerUtil.getPlayerByEntityId(wrapper.getEntityId());
             }
         } else if (packet instanceof CPacketWindowClick) {
             inventoryOpen = true;
@@ -512,11 +511,9 @@ public final class PlayerData {
         } else if (packet instanceof SPacketPosition) {
             SPacketPosition wrapper = (SPacketPosition) packet;
 
-            Location teleportLocation = new Location(player.getWorld(),
-                    wrapper.getX(), wrapper.getY(), wrapper.getZ(),
-                    wrapper.getYaw(), wrapper.getPitch());
+            Vector tpLoc = new Vector(wrapper.getX(), wrapper.getY(), wrapper.getZ());
 
-            transConfirm(() -> teleports.add(teleportLocation));
+            transConfirm(() -> teleports.add(tpLoc));
         } else if (packet instanceof SPacketRemoveEntityEffect) {
             SPacketRemoveEntityEffect wrapper = (SPacketRemoveEntityEffect) packet;
 
@@ -560,8 +557,10 @@ public final class PlayerData {
     }
 
     private void addEntityToMap(int entityId, int x, int y, int z) {
-        if (!entityMap.containsKey(entityId)) Bukkit.getScheduler().runTaskLater(FairFight.INSTANCE.getPlugin(), () ->
-                entityMap.put(entityId, new HitboxEntity(x, y, z)), 3L);
+        if (!entityMap.containsKey(entityId)) {
+            Bukkit.getScheduler().runTaskLater(FairFight.INSTANCE.getPlugin(),
+                    () -> entityMap.put(entityId, new HitboxEntity(x, y, z)), 3L);
+        }
     }
 
     private void processTicks() {
@@ -572,7 +571,6 @@ public final class PlayerData {
         ++tickSinceOtherVelocity;
         ++tickSinceOffsetMotion;
         ++tickSinceAbilityChange;
-        ++tickSinceRidingInteract;
         ++tickSincePlacedBlock;
         ++tickSinceDroppedItem;
 
@@ -1033,14 +1031,16 @@ public final class PlayerData {
     }
 
     public void setback(SetbackType setbackType) {
-        final Location teleport;
+        // 在给一些检测使用回弹前, 考虑一下是否可能会被作弊端利用, 而实现虚空回弹(Anti Void)
+
+        Location teleport = null;
 
         switch (setbackType) {
             case LAST_LOCATION:
-                teleport = lastLocation.clone();
+                if (lastLocation != null) teleport = lastLocation.clone();
                 break;
             case SAFE_GROUND:
-                teleport = lastGroundLocation.clone();
+                if (lastGroundLocation != null) teleport = lastGroundLocation.clone();
                 break;
             default:
                 FairFight.INSTANCE.consoleLog(ChatColor.RED +
@@ -1048,19 +1048,25 @@ public final class PlayerData {
                 return;
         }
 
-        // 因为本反作弊不在主线程运行, 此方法必须发回主线程执行
-        FairFight.INSTANCE.sendToMainThread(() -> player.teleport(teleport));
+        if (teleport == null) return;
+
+        // 因为本反作弊不在主线程运行, 必须切回主线程
+        final Location finalTeleport = teleport;
+        FairFight.INSTANCE.sendToMainThread(() -> {
+            if (player.isOnline()) player.teleport(finalTeleport);
+        });
     }
 
     public void destroy() {
         checks.clear();
-        entityMap.clear();
-        ghostBlocks.clear();
         teleports.clear();
         transactionMap.clear();
         actionMap.clear();
+        entityMap.clear();
+        ghostBlocks.clear();
 
-        lastLastLocation = lastLocation = lastGroundLocation = null;
+        lastGroundLocation = lastLastLocation = lastLocation = location = null;
+
         lastTarget = null;
     }
 
@@ -1127,7 +1133,7 @@ public final class PlayerData {
     public boolean maybeLagging() { // 注意! 这个判断不可信, 轻松被绕过(FakeLag, Blink等)
         long delta = flyingTime - lastFlyingTime;
 
-        return delta > 100 || delta < 2;
+        return delta > 100 || delta < 5;
     }
 
     public boolean isFlying() {
@@ -1409,10 +1415,6 @@ public final class PlayerData {
 
     public int getInventoryOpenTicks() {
         return inventoryOpenTicks;
-    }
-
-    public int getTickSinceRidingInteract() {
-        return tickSinceRidingInteract;
     }
 
     public int getTickSincePlacedBlock() {

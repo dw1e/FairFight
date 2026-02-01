@@ -1,6 +1,5 @@
 package me.dw1e.ff.check.impl.killaura;
 
-import com.comphenix.protocol.wrappers.EnumWrappers;
 import me.dw1e.ff.check.Check;
 import me.dw1e.ff.check.api.Category;
 import me.dw1e.ff.check.api.annotations.CheckInfo;
@@ -25,10 +24,9 @@ public final class KillAuraI extends Check {
         else if (packet instanceof CPacketUseEntity) {
             CPacketUseEntity wrapper = (CPacketUseEntity) packet;
 
-            if (wrapper.getAction() == EnumWrappers.EntityUseAction.ATTACK) attacked = true;
+            if (wrapper.isAttack()) attacked = true;
 
-            if (wrapper.getAction() == EnumWrappers.EntityUseAction.INTERACT
-                    || wrapper.getAction() == EnumWrappers.EntityUseAction.INTERACT_AT) interacted = true;
+            if (wrapper.isInteract() || wrapper.isInteractAt()) interacted = true;
 
         } else if (packet instanceof CPacketBlockPlace && attacked && !interacted) flag();
     }

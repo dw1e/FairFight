@@ -1,5 +1,7 @@
 package me.dw1e.ff.misc.math;
 
+import org.bukkit.util.Vector;
+
 import java.util.Collection;
 
 public final class MathUtil {
@@ -69,5 +71,10 @@ public final class MathUtil {
         double abs = Math.abs(angle1 % 360.0 - angle2 % 360.0);
 
         return Math.abs(Math.min(360.0 - abs, abs));
+    }
+
+    public static double angle(Vector a, Vector b) {
+        double dot = Math.min(Math.max(a.dot(b) / (a.length() * b.length()), -1), 1);
+        return Math.acos(dot);
     }
 }

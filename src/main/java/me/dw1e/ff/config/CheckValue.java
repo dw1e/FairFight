@@ -19,7 +19,7 @@ public final class CheckValue {
         config.options().copyDefaults(true);
 
         config.addDefault(name + ".enabled", true);
-        config.addDefault(name + ".punishable", true);
+        config.addDefault(name + ".punishable", check.isPunish());
         config.addDefault(name + ".punish_vl", check.getMaxViolations());
 
         updateConfig();

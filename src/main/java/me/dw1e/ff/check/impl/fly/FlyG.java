@@ -36,6 +36,7 @@ public final class FlyG extends Check {
             if (insideBlock && deltaY > 0.4 && locY != lastFlagY && !exempt) {
                 flag(String.format("deltaY=%.7f", deltaY));
                 lastFlagY = locY;
+                data.setback(PlayerData.SetbackType.SAFE_GROUND);
             }
         }
     }

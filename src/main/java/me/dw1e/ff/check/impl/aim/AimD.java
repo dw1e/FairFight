@@ -19,10 +19,7 @@ public final class AimD extends Check {
     @Override
     public void handle(WrappedPacket packet) {
         if (packet instanceof CPacketFlying) {
-            if (data.getTick() < 20
-                    || data.getTickSinceRidingInteract() < 5 // 右键点击了载具
-                    || data.getTickSinceTeleport() < 3 // 传送
-            ) return;
+            if (data.getTick() < 20 || data.getTickSinceTeleport() < 3) return;
 
             float lastLastDeltaYaw = data.getLastLastDeltaYaw(), lastLastDeltaPitch = data.getLastLastDeltaPitch();
             float lastDeltaYaw = data.getLastDeltaYaw(), lastDeltaPitch = data.getLastDeltaPitch();

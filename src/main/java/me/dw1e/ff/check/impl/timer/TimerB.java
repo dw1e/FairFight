@@ -33,8 +33,7 @@ public final class TimerB extends Check {
 
                 boolean exempt = data.getTick() < 40
                         || data.getTickSinceTeleport() < 4
-                        || data.getTickSinceSteerVehicle() < 2
-                        || data.getTickSinceRidingInteract() < 6;
+                        || data.getTickSinceSteerVehicle() < 2;
 
                 if (delay >= 5L && !exempt) samples.add(delay); // delay<5一般代表玩家丢包卡顿, 恢复了将一堆攒着的包同时发
 

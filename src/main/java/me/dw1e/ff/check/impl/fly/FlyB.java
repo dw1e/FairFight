@@ -23,8 +23,8 @@ public final class FlyB extends Check {
             boolean clientGround = data.isClientGround(), mathGround = data.isMathGround();
 
             boolean exempt = data.getTick() < 20 || data.isFlying() || data.isOnSlime() || data.isUnderBlock()
+                    || data.isInVehicle()
                     || (data.getTickSinceVelocity() == 1 && data.getVelocityY() % 0.015625 == 0.0)
-                    || data.getTickSinceRidingInteract() < 5
                     || data.getTickSincePushedByPiston() < 5
                     || data.getTickSinceTeleport() < 3 // 传送时地面状态永远为否, 跳过
                     || data.getTickSinceNearStep() < 2;

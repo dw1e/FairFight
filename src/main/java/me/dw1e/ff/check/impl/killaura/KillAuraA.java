@@ -1,6 +1,5 @@
 package me.dw1e.ff.check.impl.killaura;
 
-import com.comphenix.protocol.wrappers.EnumWrappers;
 import me.dw1e.ff.check.Check;
 import me.dw1e.ff.check.api.Buffer;
 import me.dw1e.ff.check.api.Category;
@@ -29,7 +28,7 @@ public final class KillAuraA extends Check {
         if (packet instanceof CPacketUseEntity) {
             CPacketUseEntity wrapper = (CPacketUseEntity) packet;
 
-            if (wrapper.getAction() != EnumWrappers.EntityUseAction.ATTACK) return;
+            if (!wrapper.isAttack()) return;
 
             Player target = ServerUtil.getPlayerByEntityId(wrapper.getEntityId());
 

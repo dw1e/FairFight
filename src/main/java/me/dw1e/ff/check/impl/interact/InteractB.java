@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@CheckInfo(category = Category.INTERACT, type = "B", desc = "检查破坏被完全阻挡的方块", maxVL = 5)
+@CheckInfo(category = Category.INTERACT, type = "B", desc = "检查破坏被完全阻挡的方块", punish = false)
 public final class InteractB extends Check {
 
     private final static BlockPosition[] OFFSETS = new BlockPosition[]{ // 6个方向的偏移量
@@ -79,7 +79,7 @@ public final class InteractB extends Check {
                 flag("target=" + targetBlock.getType().name()
                         + ", around=" + Arrays.toString(blocksAround.toArray()));
 
-                // 取消非法交互, 不然给多阈值是没意义的, 黑客可能不会一直只玩BedFight模式, 然后过段时间VL重置了
+                // 此检测建议只取消非法操作, 不自动封禁, 因为卡顿会误判
                 packet.setCancel(true);
                 BlockUtil.resyncBlockAt(data.getPlayer(), targetPos.getX(), targetPos.getY(), targetPos.getZ());
             }

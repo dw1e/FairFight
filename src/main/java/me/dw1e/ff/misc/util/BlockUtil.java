@@ -41,7 +41,7 @@ public final class BlockUtil {
                 Material.SOUL_SAND, Material.MYCEL, Material.WOOD, Material.LOG, Material.LEAVES,
                 Material.WOOD_DOUBLE_STEP, Material.BRICK, Material.TNT, Material.BOOKSHELF, Material.MOSSY_COBBLESTONE,
                 Material.FURNACE, Material.BURNING_FURNACE, Material.WORKBENCH, Material.JUKEBOX, Material.DISPENSER,
-                Material.DROPPER, Material.ENCHANTMENT_TABLE, Material.BEACON, Material.NOTE_BLOCK, Material.CLAY,
+                Material.DROPPER, Material.BEACON, Material.NOTE_BLOCK, Material.CLAY,
                 Material.HARD_CLAY, Material.STAINED_CLAY, Material.SANDSTONE, Material.RED_SANDSTONE,
                 Material.DOUBLE_STONE_SLAB2, Material.STONE_SLAB2, Material.NETHER_BRICK, Material.NETHER_FENCE,
                 Material.QUARTZ_BLOCK, Material.PRISMARINE, Material.PRISMARINE_SHARD, Material.PRISMARINE_CRYSTALS,

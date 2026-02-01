@@ -8,7 +8,7 @@ import me.dw1e.ff.data.PlayerData;
 import me.dw1e.ff.packet.wrapper.WrappedPacket;
 import me.dw1e.ff.packet.wrapper.client.CPacketFlying;
 
-@CheckInfo(category = Category.AIM, type = "E", desc = "检查视角移动过于稳定")
+@CheckInfo(category = Category.AIM, type = "E", desc = "检查视角移动过于稳定", maxVL = 20)
 public final class AimE extends Check {
 
     private final Buffer buffer = new Buffer(10);

@@ -24,4 +24,8 @@ public final class Buffer {
     public void reduce() {
         reduce(1.0);
     }
+
+    public double multiply(double factor) {
+        return value = Math.max(0.0, Math.min(limit, value * factor));
+    }
 }

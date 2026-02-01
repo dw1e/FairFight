@@ -1,6 +1,5 @@
 package me.dw1e.ff.check.impl.killaura;
 
-import com.comphenix.protocol.wrappers.EnumWrappers;
 import me.dw1e.ff.check.Check;
 import me.dw1e.ff.check.api.Category;
 import me.dw1e.ff.check.api.annotations.CheckInfo;
@@ -22,8 +21,7 @@ public final class KillAuraD extends Check {
     @Override
     public void handle(WrappedPacket packet) {
         if (packet instanceof CPacketFlying) ++ticks;
-        else if (packet instanceof CPacketUseEntity
-                && ((CPacketUseEntity) packet).getAction() == EnumWrappers.EntityUseAction.ATTACK) {
+        else if (packet instanceof CPacketUseEntity && ((CPacketUseEntity) packet).isAttack()) {
 
             // 大概意思就是你在1tick内攻击了多次, 这个检查来自Verus
 
