@@ -37,14 +37,14 @@ public final class FlyD extends Check {
             // 检查直接从粘液块上起跳的跳跃高度, 或越跳越高, 高度无衰减
             check_slime:
             {
-                if (!data.isOnSlime() || data.isPushedByPiston()) break check_slime;
+                if (!data.isOnSlime()) break check_slime;
 
                 double absY = Math.abs(deltaY), lastLastAbsY = Math.abs(data.getLastLastDeltaY());
 
                 double limit = attribute;
 
                 if (data.getTickSinceVelocity() == 1) limit = Math.abs(data.getVelocityY());
-                if (data.getTickSincePushedByPiston() < 3) limit = 1.0F;
+                if (data.getTickSincePushedByPiston() < data.getPingTicks() + 3) limit = 1.0F; // 需要延迟补偿
 
                 limit += 1E-7; // 精度问题
 

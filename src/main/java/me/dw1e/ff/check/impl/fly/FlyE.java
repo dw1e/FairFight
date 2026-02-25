@@ -17,7 +17,8 @@ public final class FlyE extends Check {
     @Override
     public void handle(WrappedPacket packet) {
         if (packet instanceof CPacketFlying && ((CPacketFlying) packet).isPosition()) {
-            if (!data.isClimbing() || data.isFlying() || data.getTickSincePushedByPiston() < 2) return;
+            if (!data.isClimbing() || data.isFlying() || data.getTickSincePushedByPiston() < 2
+                    || data.getTickSinceVelocity() <= data.getMaxVelocityTicks()) return;
 
             float deltaY = (float) data.getDeltaY();
 
@@ -29,11 +30,6 @@ public final class FlyE extends Check {
                     if (airTicks <= 4 + data.getJumpEffect()) limit = data.getAttributeJump();
 
                     if (data.getTickSinceInLiquid() < 3) limit = 0.3F; // 在水中往上游时碰到梯子就是这么多
-
-                    if (data.getTickSinceVelocity() <= data.getMaxVelocityTicks()) {
-                        limit = (float) data.getVelocityY(); // 击退是有一个简单的模拟的, 详见PlayerData中
-                    }
-
                     if (data.getTickSinceNearStep() < 2) limit = 0.6F; // 例如 爬悬空藤曼时走上台阶
 
                     if (deltaY > limit) flag(String.format("↑ deltaY=%s/%s, ticks=%s", deltaY, limit, airTicks),

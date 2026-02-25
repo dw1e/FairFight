@@ -6,7 +6,6 @@ import me.dw1e.ff.check.impl.aim.*;
 import me.dw1e.ff.check.impl.autoclicker.AutoClickerA;
 import me.dw1e.ff.check.impl.autoclicker.AutoClickerB;
 import me.dw1e.ff.check.impl.autoclicker.AutoClickerC;
-import me.dw1e.ff.check.impl.autoclicker.AutoClickerD;
 import me.dw1e.ff.check.impl.badpacket.*;
 import me.dw1e.ff.check.impl.fly.*;
 import me.dw1e.ff.check.impl.hitbox.HitboxA;
@@ -88,7 +87,6 @@ public final class CheckManager {
         checkList.add(AutoClickerA.class);
         checkList.add(AutoClickerB.class);
         checkList.add(AutoClickerC.class);
-        checkList.add(AutoClickerD.class);
 
         checkList.add(BadPacketA.class);
         checkList.add(BadPacketB.class);
@@ -139,6 +137,7 @@ public final class CheckManager {
         checkList.add(KillAuraH.class);
         checkList.add(KillAuraI.class);
         checkList.add(KillAuraJ.class);
+        checkList.add(KillAuraK.class);
 
         checkList.add(PhaseA.class);
 

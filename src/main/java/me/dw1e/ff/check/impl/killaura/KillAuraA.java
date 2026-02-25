@@ -41,12 +41,13 @@ public final class KillAuraA extends Check {
             attacked = false;
 
             boolean invalid = !data.getEmulationProcessor().isHitSlowdown()
-                    && data.getEmulationProcessor().isSprint() && data.isClientGround();
+                    && data.getEmulationProcessor().isSprint()
+                    && !data.isFlying();
 
             if (invalid) {
                 if (buffer.add() > 3) flag();
 
-            } else buffer.reduce(0.2);
+            } else buffer.reduce(0.125);
         }
     }
 

@@ -20,8 +20,9 @@ public final class PhaseA extends Check {
 
     private final static Set<Material> EXEMPT_BLOCKS = EnumSet.of(Material.SOUL_SAND);
 
-    private boolean lastInsideBlock;
     private Vector lastPistonPos = new Vector();
+    private Vector lastGoodLocation;
+    private int insideBlockTicks;
 
     public PhaseA(PlayerData data) {
         super(data);
@@ -45,6 +46,8 @@ public final class PhaseA extends Check {
                 }
             }
 
+            insideBlockTicks = insideBlock ? ++insideBlockTicks : 0;
+
             Vector pos = data.getLocation().toVector();
 
             if (data.isPushedByPiston()) lastPistonPos = pos;
@@ -53,12 +56,18 @@ public final class PhaseA extends Check {
             boolean exempt = pistonPos || data.getTickSinceSteerVehicle() < 3
                     || data.getPlayer().getGameMode().equals(GameMode.SPECTATOR);
 
-            if (!lastInsideBlock && insideBlock && !exempt) {
-                flag("blocks=" + Arrays.toString(blocks.toArray()));
-                data.setback(PlayerData.SetbackType.LAST_LOCATION);
+            int limit = data.getPingTicks() + 2; // +2给一些冗余
+
+            if (insideBlock) {
+                if (insideBlockTicks > limit && !exempt) {
+                    flag("ticks=" + insideBlockTicks + "/" + limit + ", blocks=" + Arrays.toString(blocks.toArray()));
+
+                    if (lastGoodLocation != null) data.setback(lastGoodLocation);
+                }
+            } else {
+                lastGoodLocation = data.getLocation().toVector();
             }
 
-            lastInsideBlock = insideBlock;
         }
     }
 

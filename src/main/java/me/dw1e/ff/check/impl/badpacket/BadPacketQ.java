@@ -11,7 +11,7 @@ import me.dw1e.ff.packet.wrapper.server.SPacketTransaction;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-@CheckInfo(category = Category.BAD_PACKET, type = "Q", desc = "异常的确认包回复情况", maxVL = 3)
+@CheckInfo(category = Category.BAD_PACKET, type = "Q", desc = "异常的确认包回复情况", maxVL = 3, punish = false)
 public final class BadPacketQ extends Check {
 
     // 如果服务器发送了一个 Transaction 包, 正常的合法客户端应该会按照顺序回复

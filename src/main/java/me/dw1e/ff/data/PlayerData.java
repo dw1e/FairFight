@@ -944,7 +944,7 @@ public final class PlayerData {
         if (sprinting) attribute *= 1.3F;
 
         attribute *= 1.0F + (speedEffect * 0.2F);
-        attribute *= 1.0F + (slowEffect * -0.15F);
+        attribute *= Math.max(0.0F, 1.0F + (slowEffect * -0.15F));
 
         if (wasInWater) { // 修复深海探索者附魔误判
             float depthStrider = 0.0F;
@@ -1028,6 +1028,16 @@ public final class PlayerData {
 
     private boolean canDrawBow(Material material) {
         return material.equals(Material.BOW) && player.getInventory().contains(Material.ARROW);
+    }
+
+    public void setback(Vector vector) {
+        // 别问为什么这样写, 怕崩服, 因为这是异步反作弊!!!
+        // 建议检测内不要直接存Location, 用Vector
+        FairFight.INSTANCE.sendToMainThread(() -> {
+            if (player.isOnline()) {
+                player.teleport(vector.toLocation(player.getWorld(), location.getYaw(), location.getPitch()));
+            }
+        });
     }
 
     public void setback(SetbackType setbackType) {
