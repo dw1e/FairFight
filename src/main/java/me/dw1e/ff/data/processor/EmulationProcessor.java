@@ -3,8 +3,11 @@ package me.dw1e.ff.data.processor;
 import me.dw1e.ff.data.PlayerData;
 import me.dw1e.ff.misc.math.OptiFineMath;
 import me.dw1e.ff.misc.math.VanillaMath;
+import me.dw1e.ff.misc.util.BlockUtil;
 import me.dw1e.ff.packet.wrapper.WrappedPacket;
 import me.dw1e.ff.packet.wrapper.client.CPacketFlying;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
 // 模拟来自AntiHaxerman, 半成品, 模拟不全, 目前只使用在Velocity检测
@@ -15,6 +18,8 @@ public final class EmulationProcessor {
     private double minDistance;
     private boolean sprint, jump, using, hitSlowdown, fastMath;
 
+    private float lastSlipperiness = 0.6F; // 只有这个模拟需要上次的方块摩擦, 不写PlayerData里了
+
     public EmulationProcessor(PlayerData data) {
         this.data = data;
     }
@@ -24,6 +29,14 @@ public final class EmulationProcessor {
             Vector realMotion = new Vector(data.getDeltaX(), 0.0, data.getDeltaZ());
 
             minDistance = Double.MAX_VALUE;
+
+            Location lastLastLoc = data.getLastLastLocation();
+
+            Block blockBelow = BlockUtil.getBlockAsync(new Location(data.getPlayer().getWorld(),
+                    lastLastLoc.getX(), lastLastLoc.getY() - 1.0, lastLastLoc.getZ()
+            ));
+
+            if (blockBelow != null) lastSlipperiness = BlockUtil.getSlipperiness(blockBelow.getType());
 
             iteration:
             {
@@ -63,7 +76,7 @@ public final class EmulationProcessor {
                                             Vector motion = new Vector(data.getLastDeltaX(), 0.0, data.getLastDeltaZ());
 
                                             if (data.isLastLastClientGround()) {
-                                                motion.multiply(new Vector(0.6F * 0.91F, 0.0, 0.6F * 0.91F));
+                                                motion.multiply(new Vector(lastSlipperiness * 0.91F, 0.0, lastSlipperiness * 0.91F));
                                             } else {
                                                 motion.multiply(new Vector(0.91F, 0.0, 0.91F));
                                             }

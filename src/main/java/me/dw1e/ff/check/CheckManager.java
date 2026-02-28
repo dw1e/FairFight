@@ -112,7 +112,6 @@ public final class CheckManager {
         checkList.add(FlyD.class);
         checkList.add(FlyE.class);
         checkList.add(FlyF.class);
-        checkList.add(FlyG.class);
 
         checkList.add(HitboxA.class);
         checkList.add(HitboxB.class);

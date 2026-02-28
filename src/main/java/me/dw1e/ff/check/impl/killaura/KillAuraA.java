@@ -47,7 +47,7 @@ public final class KillAuraA extends Check {
             if (invalid) {
                 if (buffer.add() > 3) flag();
 
-            } else buffer.reduce(0.125);
+            } else buffer.reduce(0.15);
         }
     }
 
